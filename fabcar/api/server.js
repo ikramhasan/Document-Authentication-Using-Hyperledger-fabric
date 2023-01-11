@@ -8,6 +8,8 @@ const FabricCAServices = require('fabric-ca-client');
 const path = require('path');
 const fs = require('fs');
 const e = require('express');
+const cors = require("cors");
+app.use(cors());
 //const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
   //      const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
@@ -93,6 +95,7 @@ const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizatio
 });
 
 app.post('/api/login', async function (req, res) {
+    console.log(req.body);
     try {
         const id = req.body.id;
         const pass = req.body.pass;
@@ -183,7 +186,7 @@ const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizatio
 // Submit the specified transaction.
         // createCar transaction - requires 5 argument, ex: ('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom')
         // changeCarOwner transaction - requires 2 args , ex: ('changeCarOwner', 'CAR10', 'Dave')
-        await contract.submitTransaction('createTranscript', req.body.id, req.body.id, req.body.email, req.body.pass);
+        await contract.submitTransaction('createTranscript', req.body.id, req.body.email, req.body.pass);
         console.log('Transaction has been submitted');
         res.json({data: {
             id: req.body.id,

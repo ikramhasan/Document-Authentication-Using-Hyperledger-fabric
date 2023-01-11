@@ -1,4 +1,3 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -7,23 +6,23 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-const Home: NextPage = () => {
+const Login = () => {
   const router = useRouter();
 
   const LoginSchema = Yup.object().shape({
     pass: Yup.string()
       .min(6, 'Too Short!')
       .required('Password is required'),
-    id: Yup.string().min(8, 'Too Short!').required('Id is required'),
+    email: Yup.string().email('Not a valid email').required('Email is required'),
   });
   
-  const login = async (data: any) =>  {
+  const login = async (data) =>  {
     console.log(data);
     const headers = {'Content-Type':'application/json',
                     'Access-Control-Allow-Origin':'*',
                     'Access-Control-Allow-Methods':'POST,PATCH,OPTIONS'};
 
-    const response = await fetch('http://localhost:4000/api/login', {
+    const response = await fetch('http://localhost:4000/api/admin/login', {
       body: data,
       method: 'POST',
       headers: headers,
@@ -41,7 +40,7 @@ const Home: NextPage = () => {
     }
   });
 
-  const handleLogin = (data: any) => {
+  const handleLogin = (data) => {
     loginMutation.mutate(data);
   }
 
@@ -53,7 +52,7 @@ const Home: NextPage = () => {
       const user = loginMutation.data?.data;
       if(user != undefined) {
         localStorage.setItem('user', JSON.stringify(user));
-        router.replace('/home');
+        router.replace('/admin');
       }
     }
   }, [loginMutation.status])
@@ -78,7 +77,7 @@ const Home: NextPage = () => {
         <Formik
        initialValues={{
          pass: '',
-         id: '',
+         email: '',
        }}
        validationSchema={LoginSchema}
        onSubmit={values => {
@@ -89,17 +88,17 @@ const Home: NextPage = () => {
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
-                <label htmlFor="id" className="sr-only">
-                  Student ID
+                <label htmlFor="email" className="sr-only">
+                  Email Address
                 </label>
                 <Field
-                  id="id"
-                  name="id"
-                  type="id"
-                  autoComplete="id"
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
                   required
                   className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Student ID"
+                  placeholder="Email Address"
                 />
               </div>
               <div>
@@ -152,4 +151,4 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default Login
